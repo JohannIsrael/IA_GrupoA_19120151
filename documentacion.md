@@ -1,4 +1,4 @@
-# Documentación del juego phaser
+# Documentación del juego realizado en phaser
 
 ## Configuración del phaser
 
