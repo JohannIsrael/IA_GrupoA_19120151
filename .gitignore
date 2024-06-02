@@ -3,6 +3,10 @@
 #Imagenes
 reconocedor_rostros/capturas
 
+#Archivos pesados
+EmocionesLBPHZwei.xml
+*.rar
+
 #Entorno Virtual
 venv
 
