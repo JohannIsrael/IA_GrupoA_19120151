@@ -4,7 +4,7 @@
 reconocedor_rostros/capturas
 
 #Archivos pesados
-EmocionesLBPHZwei.xml
+*.xml
 *.rar
 
 #Entorno Virtual
