@@ -1,7 +1,10 @@
 
-
-#Imagenes
+#Imagenes dataset
 reconocedor_rostros/capturas
+# Recocimiento_Wally/dataset
+
+#Videos dataset
+CNN/videos
 
 #Archivos pesados
 *.xml
