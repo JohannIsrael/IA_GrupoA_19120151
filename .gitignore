@@ -6,6 +6,7 @@ reconocedor_rostros/capturas
 #Archivos pesados
 *.xml
 *.rar
+*.zip
 
 #Entorno Virtual
 venv
