@@ -2,6 +2,7 @@
 #Imagenes dataset
 reconocedor_rostros/capturas
 # Recocimiento_Wally/dataset
+CNN/imgs
 
 #Videos dataset
 CNN/videos
