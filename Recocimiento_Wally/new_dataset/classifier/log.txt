@@ -1,15 +1,15 @@
 **************************************************
 *************** CREATING SAMPLES *****************
 **************************************************
-Object : C:/Users/salmi/Documents/ITM/Semestre 9/IA/IA_GrupoA_19120151/Recocimiento_Wally/new_dataset
+Object : C:/Users/Johann Israel/Documents/ITM/Semestre 9/IA/Recocimiento_Wally/new_dataset
 Fixing file names in negative images folder.
 Fixing file names in positive images folder.
-Creating negative list C:/Users/salmi/Documents/ITM/Semestre 9/IA/IA_GrupoA_19120151/Recocimiento_Wally/new_dataset/neg.lst
-Creating positive list C:/Users/salmi/Documents/ITM/Semestre 9/IA/IA_GrupoA_19120151/Recocimiento_Wally/new_dataset/pos.lst
+Creating negative list C:/Users/Johann Israel/Documents/ITM/Semestre 9/IA/Recocimiento_Wally/new_dataset/neg.lst
+Creating positive list C:/Users/Johann Israel/Documents/ITM/Semestre 9/IA/Recocimiento_Wally/new_dataset/pos.lst
 Running : opencv_createsamples
-Info file name: C:\Users\salmi\Documents\ITM\Semestre 9\IA\IA_GrupoA_19120151\Recocimiento_Wally\new_dataset\pos.lst
+Info file name: C:\Users\Johann Israel\Documents\ITM\Semestre 9\IA\Recocimiento_Wally\new_dataset\pos.lst
 Img file name: (NULL)
-Vec file name: C:\Users\salmi\Documents\ITM\Semestre 9\IA\IA_GrupoA_19120151\Recocimiento_Wally\new_dataset\pos_samples.vec
+Vec file name: C:\Users\Johann Israel\Documents\ITM\Semestre 9\IA\Recocimiento_Wally\new_dataset\pos_samples.vec
 BG  file name: (NULL)
 Num: 120
 BG color: 0
@@ -31,9 +31,9 @@ Done. Created 120 samples
 **************************************************
 Running : opencv_traincascade
 PARAMETERS:
-cascadeDirName: C:\Users\salmi\Documents\ITM\Semestre 9\IA\IA_GrupoA_19120151\Recocimiento_Wally\new_dataset\classifier
-vecFileName: C:\Users\salmi\Documents\ITM\Semestre 9\IA\IA_GrupoA_19120151\Recocimiento_Wally\new_dataset\pos_samples.vec
-bgFileName: C:\Users\salmi\Documents\ITM\Semestre 9\IA\IA_GrupoA_19120151\Recocimiento_Wally\new_dataset\neg.lst
+cascadeDirName: C:\Users\Johann Israel\Documents\ITM\Semestre 9\IA\Recocimiento_Wally\new_dataset\classifier
+vecFileName: C:\Users\Johann Israel\Documents\ITM\Semestre 9\IA\Recocimiento_Wally\new_dataset\pos_samples.vec
+bgFileName: C:\Users\Johann Israel\Documents\ITM\Semestre 9\IA\Recocimiento_Wally\new_dataset\neg.lst
 
 numPos: 120
 numNeg: 430
@@ -613,7 +613,7 @@ NEG current samples: 429
 NEG current samples: 430
 NEG count : acceptanceRatio    430 : 1
 
-Precalculation time: 7.49
+Precalculation time: 23.393
 
 +----+---------+---------+
 |  N |    HR   |    FA   |
@@ -627,7 +627,7 @@ Precalculation time: 7.49
 
 END>
 
-Training until now has taken 0 days 0 hours 0 minutes 50 seconds.
+Training until now has taken 0 days 0 hours 2 minutes 18 seconds.
 
 
 ===== TRAINING 1-stage =====
@@ -1189,7 +1189,7 @@ NEG current samples: 429
 NEG current samples: 430
 NEG count : acceptanceRatio    430 : 0.142573
 
-Precalculation time: 7.044
+Precalculation time: 17.219
 
 +----+---------+---------+
 |  N |    HR   |    FA   |
@@ -1203,7 +1203,8 @@ Precalculation time: 7.044
 
 END>
 
-Training until now has taken 0 days 0 hours 1 minutes 32 seconds.
+Training until now has taken 0 days 0 hours 4 minutes 7 seconds.
+
 
 ===== TRAINING 2-stage =====
 <BEGIN
@@ -1762,9 +1763,9 @@ NEG current samples: 427
 NEG current samples: 428
 NEG current samples: 429
 NEG current samples: 430
-NEG count : acceptanceRatio    430 : 0.0325486
+NEG count : acceptanceRatio    430 : 0.0327345
 
-Precalculation time: 5.439
+Precalculation time: 14.881
 
 +----+---------+---------+
 |  N |    HR   |    FA   |
@@ -1778,7 +1779,8 @@ Precalculation time: 5.439
 
 END>
 
-Training until now has taken 0 days 0 hours 2 minutes 8 seconds.
+Training until now has taken 0 days 0 hours 5 minutes 37 seconds.
+
 
 ===== TRAINING 3-stage =====
 <BEGIN
