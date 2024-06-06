@@ -281,7 +281,7 @@ function update() {
     }
 
     if (bullet.position.x <= 0) {
-        resetVariables();   //? Esto se debe llamar antes para que que la bala no se quede 
+        resetVariables();   
     }
 
     if (bulletD2 == false) {

@@ -58,13 +58,13 @@ var modoAuto = false, eCompleto=false;
 var juego = new Phaser.Game(w, h, Phaser.CANVAS, '', { preload: preload, create: create, update: update, render:render});
 
 function preload() {
-    juego.load.image('fondo', 'assets/game/fondo.jpg');
-    juego.load.spritesheet('mono', 'assets/sprites/altair.png',32 ,48);
-    juego.load.image('nave', 'assets/game/ufo.png');
-    juego.load.image('bala', 'assets/sprites/purple_ball.png');
-    juego.load.image('menu', 'assets/game/menu.png');
+    // juego.load.image('fondo', 'assets/game/fondo.jpg');
+    // juego.load.spritesheet('mono', 'assets/sprites/altair.png',32 ,48);
+    // juego.load.image('nave', 'assets/game/ufo.png');
+    // juego.load.image('bala', 'assets/sprites/purple_ball.png');
+    // juego.load.image('menu', 'assets/game/menu.png');
 
-    juego.load.image('naveup', 'assets/game/ufo.png');
+    // juego.load.image('naveup', 'assets/game/ufo.png');
 }
 
 
@@ -107,17 +107,6 @@ function create() {
 
 function enRedNeural(){
     nnEntrenamiento.train(datosEntrenamiento, {rate: 0.0003, iterations: 10000, shuffle: true});
-}
-
-
-function datosDeEntrenamiento(param_entrada){
-
-    console.log("Entrada",param_entrada[0]+" "+param_entrada[1]);
-    nnSalida = nnNetwork.activate(param_entrada);
-    var aire=Math.round( nnSalida[0]*100 );
-    var piso=Math.round( nnSalida[1]*100 );
-    console.log("Valor ","En el Aire %: "+ aire + " En el suelo %: " + piso );
-    return nnSalida[0]>=nnSalida[1];
 }
 
 
@@ -218,9 +207,20 @@ function update() {
 
         console.log("Desplazamiento Bala, Velocidad Bala, Estatus, Estatus: ",
             despBala + " " +velocidadBala + " "+ estatusAire+" "+  estatuSuelo);
-   }
+    }
 
 }
+
+function datosDeEntrenamiento(param_entrada){
+
+    console.log("Entrada",param_entrada[0]+" "+param_entrada[1]);
+    nnSalida = nnNetwork.activate(param_entrada);
+    var aire=Math.round( nnSalida[0]*100 );
+    var piso=Math.round( nnSalida[1]*100 );
+    console.log("Valor ","En el Aire %: "+ aire + " En el suelo %: " + piso );
+    return nnSalida[0]>=nnSalida[1];
+}
+
 
 
 function disparo(){
