@@ -13,7 +13,7 @@
 
 ## Objetivo
 
-Desarrollar un sistema capaz de reconocer las emociones de feliz, asombrado y enojado
+Desarrollar un programa capaz de reconocer las emociones de feliz, asombrado y enojado
 
 ## Teoría 
 
@@ -65,7 +65,7 @@ Las etapas para este proyectos fue fueron:
 - Capturar un mínimo de 600 imágenes positivas de cada emoción y persona
 - Capturar un mínimo de 1000 imágenes negativas de cada persona
 - Cargar las imágenes y entrenar el modelo
-- Probar el model terminado
+- Probar el modelo terminado
 
 
 ## Desarrollo
