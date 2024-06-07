@@ -1,352 +1,337 @@
-var canvasWidth = 800;
-var canvasHeight = 400;
-var player;
-var background;
-var newGame = true;
+var anchoJuego = 800;
+var altoJuego = 400;
+var jugador;
+var fondo;
 
-var bullet, bulletD = false, ship;
-var bullet2, bulletD2 = false, ship2;
-var bullet3, bulletD3 = false, ship3;
-var jump, left, right, direction = 1;
-var menu;
+var bala1, bala2, bala3, balaDisparada = false;
+var nave1, nave2, nave3;
 
-var bulletSpeed;
-var bulletSpeed2 = 203;
-var bulletSpeed3 = 160; 
-var bulletDistance;
-var bulletDistance2;
-var bulletDistance2x; 
-var bulletDistance3;
-var bulletDistance3x;
-var airStatus;
-var groundStatus;
-var progress;
-var still;
-var nnNetwork2, nnTraining2, nnOutput2, trainingData2 = [];
-var nnNetwork, nnTraining, nnOutput, trainingData = [];
-var nnNetwork3, nnTraining3, nnOutput3, trainingData3 = [];
-var autoMode = false, trainingComplete = false;
+var teclaSaltar, teclaIzquierda;
+var menuPausa;
 
-var game = new Phaser.Game(canvasWidth, canvasHeight, Phaser.CANVAS, '', {
-    preload: preload,
-    create: create,
-    update: update,
-    render: render
-});
+
+var velocidadBala;
+var desplazamientoBala;
+
+var enAire;
+var enSuelo;
+
+var redNeuronalSaltar, redNeuronalMoverIzquierda, redNeuronalMoverDerecha;
+var entrenamientoSaltar, entrenamientoMoverIzquierda, entrenamientoMoverDerecha;
+
+var salidaRedNeuronal, datosEntrenamientoSaltar = [];
+var datosEntrenamientoMoverIzquierda = [];
+var datosEntrenamientoMoverDerecha = [];
+
+var moverDerechaEnAire = 0;
+var modoAutomatico = false, entrenamientoCompleto = false;
+
+var moviendoDerecha = false;
+
+var juego = new Phaser.Game(anchoJuego, altoJuego, Phaser.CANVAS, '', { preload: preload, create: create, update: update });
+
+const bala3PosX = anchoJuego - 270;
+const bala3PosY = altoJuego - 350;
+const velocidadBala2 = 85;
+
+var bloqueIA = false;
+var moviendoIzquierda = false;
+var estadoDerecha = 0;
+var estadoIzquierda = 0;
+var estadoTemporal = 0;
 
 function preload() {
-    game.load.image('background', 'assets/game/fondo.jpg');
-    game.load.spritesheet('character', 'assets/sprites/altair.png', 32, 48);
-    game.load.image('ship', 'assets/game/ufo.png');
-    game.load.image('bullet', 'assets/sprites/purple_ball.png');
-    game.load.image('menu', 'assets/game/menu.png');
+    juego.load.image('fondo', 'assets/game/fondo.png');
+    juego.load.spritesheet('mono', 'assets/sprites/altair.png', 32, 48);
+    juego.load.image('nave', 'assets/game/ufo.png');
+    juego.load.image('bala', 'assets/sprites/purple_ball.png');
+    juego.load.image('menu', 'assets/game/menu.png');
 }
-// function preload() {
-//     game.load.image('fondo', 'assets/game/fondo.jpg');
-//     game.load.spritesheet('mono', 'assets/sprites/altair.png',32 ,48);
-//     game.load.image('nave', 'assets/game/ufo.png');
-//     game.load.image('bala', 'assets/sprites/purple_ball.png');
-//     game.load.image('menu', 'assets/game/menu.png');
-
-//     game.load.image('naveup', 'assets/game/ufo.png');
-// }
-
-
 
 function create() {
-    game.physics.startSystem(Phaser.Physics.ARCADE);
-    game.physics.arcade.gravity.y = 800;
-    game.time.desiredFps = 30;
+    juego.physics.startSystem(Phaser.Physics.ARCADE);
+    juego.physics.arcade.gravity.y = 800;
+    juego.time.desiredFps = 30;
 
-    background = game.add.tileSprite(0, 0, canvasWidth, canvasHeight, 'background');
-    ship = game.add.sprite(canvasWidth - 100, canvasHeight - 70, 'ship');
-    ship2 = game.add.sprite(20, canvasHeight - 400, 'ship');
-    ship3 = game.add.sprite(canvasWidth - 100, 0, 'ship'); 
-    bullet = game.add.sprite(canvasWidth - 100, canvasHeight, 'bullet');
-    bullet2 = game.add.sprite(55, canvasHeight - 350, 'bullet');
-    bullet3 = game.add.sprite(canvasWidth - 100, 70, 'bullet'); 
-    player = game.add.sprite(50, canvasHeight - 48, 'character'); 
+    fondo = juego.add.tileSprite(0, 0, anchoJuego, altoJuego, 'fondo');
 
-    game.physics.enable(player);
-    player.body.collideWorldBounds = true;
-    var run = player.animations.add('run', [8, 9, 10, 11]);
-    player.animations.play('run', 10, true);
+    nave1 = juego.add.sprite(anchoJuego - 110, altoJuego - 55, 'nave');
+    nave2 = juego.add.sprite(anchoJuego - 800, altoJuego - 400, 'nave');
+    nave3 = juego.add.sprite(anchoJuego - 200, altoJuego - 400, 'nave');
 
-    game.physics.enable(bullet);
-    bullet.body.collideWorldBounds = true;
+    jugador = juego.add.sprite(50, altoJuego,'mono');
 
-    game.physics.enable(bullet2);
-    bullet2.body.collideWorldBounds = true;
+    juego.physics.enable(jugador);
+    jugador.body.collideWorldBounds = true;
+    var corre = jugador.animations.add('corre',[8,9,10,11]);
+    jugador.animations.play('corre', 10, true);
 
-    game.physics.enable(bullet3);
-    bullet3.body.collideWorldBounds = true; 
+    bala1 = juego.add.sprite(anchoJuego - 100, altoJuego, 'bala');
+    juego.physics.enable(bala1);
+    bala1.body.collideWorldBounds = true;
 
-    pauseLabel = game.add.text(canvasWidth - 100, 20, 'Pause', { font: '20px Arial', fill: '#fff' });
-    pauseLabel.inputEnabled = true;
-    pauseLabel.events.onInputUp.add(pause, this);
-    game.input.onDown.add(pauseClick, this);
+    bala2 = juego.add.sprite(anchoJuego - 750, altoJuego - 350, 'bala');
+    juego.physics.enable(bala2);
+    bala2.body.collideWorldBounds = false;
 
-    jump = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
-    left = game.input.keyboard.addKey(Phaser.Keyboard.A);
-    right = game.input.keyboard.addKey(Phaser.Keyboard.D);
+    bala3 = juego.add.sprite(bala3PosX, bala3PosY, 'bala');
+    juego.physics.enable(bala3);
+    bala3.body.collideWorldBounds = false;
 
-    nnNetwork = new synaptic.Architect.Perceptron(2, 10, 10, 2);
-    nnTraining = new synaptic.Trainer(nnNetwork);
+    etiquetaPausa = juego.add.text(anchoJuego - 430, 10, 'Pausa', { font: '20px Arial', fill: '#fff' });
+    etiquetaPausa.inputEnabled = true;
+    etiquetaPausa.events.onInputUp.add(pausarJuego, self);
+    juego.input.onDown.add(reanudarJuego, self);
 
-    nnNetwork2 = new synaptic.Architect.Perceptron(2, 10, 10, 2);
-    nnTraining2 = new synaptic.Trainer(nnNetwork2);
+    teclaSaltar = juego.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+    teclaIzquierda = juego.input.keyboard.addKey(Phaser.Keyboard.A);
+    teclaDerecha = juego.input.keyboard.addKey(Phaser.Keyboard.D);
 
-    nnNetwork3 = new synaptic.Architect.Perceptron(2, 10, 10, 2); 
-    nnTraining3 = new synaptic.Trainer(nnNetwork3);
+    teclaIzquierda.onUp.add(detenerMovimiento, this);
+
+    redNeuronalSaltar = new synaptic.Architect.Perceptron(2, 8, 8, 1);
+    entrenamientoSaltar = new synaptic.Trainer(redNeuronalSaltar);
+
+    redNeuronalMoverIzquierda = new synaptic.Architect.Perceptron(3, 8, 8, 1);
+    entrenamientoMoverIzquierda = new synaptic.Trainer(redNeuronalMoverIzquierda);
+
+    redNeuronalMoverDerecha = new synaptic.Architect.Perceptron(2, 8, 8, 1);
+    entrenamientoMoverDerecha = new synaptic.Trainer(redNeuronalMoverDerecha);
 }
 
-function neuralNetwork() {
-    nnTraining.train(trainingData, { rate: 0.0003, iterations: 10000, shuffle: true });
+const reiniciarBala2 = () => {
+    bala2.position.x = anchoJuego - 750;
+    bala2.body.position.y = 5;
+    bala2.body.velocity.y = velocidadBala2;
+};
+
+const reiniciarPosicionBala3 = () => {
+    bala3.position.x = bala3PosX;
+    bala3.position.y = bala3PosY;
+};
+
+function entrenarRedNeuronal() {
+    entrenamientoSaltar.train(datosEntrenamientoSaltar, { rate: 0.0003, iterations: 5000, shuffle: true });
+    entrenamientoMoverIzquierda.train(datosEntrenamientoMoverIzquierda, { rate: 0.0003, iterations: 5000, shuffle: true });
+    entrenamientoMoverDerecha.train(datosEntrenamientoMoverDerecha, { rate: 0.0003, iterations: 5000, shuffle: true });
 }
 
-function neuralNetworkAdvance() {
-    nnTraining2.train(trainingData2, { rate: 0.0003, iterations: 10000, shuffle: true });
-}
-function neuralNetwork3() {
-    nnTraining3.train(trainingData3, { rate: 0.0003, iterations: 10000, shuffle:true });
-}
-function trainingDataInput(param_input) {
-    nnOutput = nnNetwork.activate(param_input);
-    var air = Math.round(nnOutput[0] * 100);
-    var ground = Math.round(nnOutput[1] * 100);
-    return nnOutput[0] >= nnOutput[1];
+function obtenerDatosSaltar(parametrosEntrada) {
+    salidaRedNeuronal = redNeuronalSaltar.activate(parametrosEntrada);
+    var porcentajeAire = Math.round(salidaRedNeuronal[0] * 100);
+    return porcentajeAire >= 40;
 }
 
-function trainingDataInputBullet2(param_input) {
-    nnOutput2 = nnNetwork2.activate(param_input);
-    var progress = Math.round(nnOutput2[0] * 100);
-    var still = Math.round(nnOutput2[1] * 100);
-    return nnOutput2[0] >= nnOutput2[1];
-}
-function trainingDataInputBullet3(param_input) {
-    nnOutput3 = nnNetwork3.activate(param_input);
-    var horizontalMovement = Math.round(nnOutput3[0] * 100);
-    var verticalMovement = Math.round(nnOutput3[1] * 100);
-
-    return nnOutput3[0] >= nnOutput3[1];
+function obtenerDatosMoverIzquierda(parametrosEntrada) {
+    salidaRedNeuronalMoverIzquierda = redNeuronalMoverIzquierda.activate(parametrosEntrada);    
+    const resultado = Math.round(salidaRedNeuronalMoverIzquierda[0] * 100);
+    console.log("RN Mover Izquierda", salidaRedNeuronalMoverIzquierda, resultado);
+    return resultado > 20;
 }
 
-function pause() {
-    game.paused = true;
-    menu = game.add.sprite(canvasWidth / 2, canvasHeight / 2, 'menu');
-    menu.anchor.setTo(0.5, 0.5);
+function obtenerDatosMoverDerecha(parametrosEntrada) {
+    salidaRedNeuronalMoverDerecha = redNeuronalMoverDerecha.activate(parametrosEntrada);
+    const resultado = Math.round(salidaRedNeuronalMoverDerecha[0] * 100);
+    console.log("RN Mover Derecha", salidaRedNeuronalMoverDerecha, resultado);
+    return resultado >= 9;
 }
 
-function pauseClick(event) {
-    if (game.paused) {
-        var menu_x1 = canvasWidth / 2 - 270 / 2,
-            menu_x2 = canvasWidth / 2 + 270 / 2,
-            menu_y1 = canvasHeight / 2 - 180 / 2,
-            menu_y2 = canvasHeight / 2 + 180 / 2;
+function pausarJuego() {
+    juego.paused = true;
+    menuPausa = juego.add.sprite(anchoJuego / 2, altoJuego / 2, 'menu');
+    menuPausa.anchor.setTo(0.5, 0.5);
+    // //Pausa.play();
+}
 
-        var mouse_x = event.x,
-            mouse_y = event.y;
+function reanudarJuego(evento) {
+    if (juego.paused) {
+        var menuX1 = anchoJuego / 2 - 270 / 2, menuX2 = anchoJuego / 2 + 270 / 2,
+            menuY1 = altoJuego / 2 - 180 / 2, menuY2 = altoJuego / 2 + 180 / 2;
 
-        if (mouse_x > menu_x1 && mouse_x < menu_x2 && mouse_y > menu_y1 && mouse_y < menu_y2) {
-            if (mouse_x >= menu_x1 && mouse_x <= menu_x2 && mouse_y >= menu_y1 && mouse_y <= menu_y1 + 90) {
-                trainingComplete = false;
-                trainingData = [];
-                trainingData2 = [];
-                autoMode = false;
-                newGame = true;
-            } else if (mouse_x >= menu_x1 && mouse_x <= menu_x2 && mouse_y >= menu_y1 + 90 && mouse_y <= menu_y2) {
-                newGame = true;
-                if (!trainingComplete) {
-                    console.log('Entrenamiento: ', trainingData.length);
-                    console.log('Entrenamiento2: ', trainingData2.length);
-                    neuralNetwork();
-                    neuralNetworkAdvance();
-                    trainingComplete = true;
+        var mouseX = evento.x,
+            mouseY = evento.y;
+
+        if (mouseX > menuX1 && mouseX < menuX2 && mouseY > menuY1 && mouseY < menuY2) {
+            if (mouseX >= menuX1 && mouseX <= menuX2 && mouseY >= menuY1 && mouseY <= menuY1 + 90) {
+                entrenamientoCompleto = false;
+                datosEntrenamientoSaltar = [];
+                modoAutomatico = false;
+            } else if (mouseX >= menuX1 && mouseX <= menuX2 && mouseY >= menuY1 + 90 && mouseY <= menuY2) {
+                if (!entrenamientoCompleto) {
+                    entrenarRedNeuronal();
+                    entrenamientoCompleto = true;
+                    jugador.position.x = 50;
                 }
-                autoMode = true;
+                modoAutomatico = true;
             }
-
-            menu.destroy();
-            resetVariables();
-            game.paused = false;
+            menuPausa.destroy();
+            resetearVariablesJuego();
+            juego.paused = false;
         }
     }
 }
 
-function resetVariables() {
-    player.body.velocity.x = 0;
-    player.body.velocity.y = 0;
-    player.body.position.x = 50;
-
-    bullet.body.velocity.x = 0;
-    bullet.position.x = canvasWidth - 100;
-
-    bullet2.body.velocity.y = bulletSpeed2;
-    bullet2.position.y = canvasHeight - 350;
-    bulletD2 = false;
-    bulletD = false;
-
-    bullet3.body.velocity.x = -bulletSpeed3 * 5; 
-    bullet3.body.velocity.y = bulletSpeed3;
-    bullet3.position.x = canvasWidth - 100; 
-    bullet3.position.y = 70; 
-    bulletD3 = false; 
+function resetearVariablesJuego() {
+    jugador.body.velocity.x = 0;
+    jugador.body.velocity.y = 0;
+    bala1.body.velocity.x = 0;
+    bala1.position.x = anchoJuego - 100;
+    balaDisparada = false;
 }
 
-function jumpAction() {
-    player.body.velocity.y = -270;
+function saltar() {
+    jugador.body.velocity.y = -270;
 }
 
-function moveRight() {
-    if (player.body.position.x < 100)
-        player.body.position.x += 10;
-}
+const moverDerecha = () => {
+    if (jugador.body.position.x > 100) return;
+    jugador.body.position.x = 50;
+    jugador.body.position.y = 400;
 
-function moveRight2() {
-    if (player.body.position.x < 100)
-        player.body.position.x += 20;
+    estadoDerecha = 1;
+    estadoIzquierda = 0;
+    moviendoIzquierda = false;
+    estadoTemporal = 1;
+};
+
+const moverIzquierda = () => {
+    jugador.body.velocity.x = -80;
+    estadoDerecha = 0;
+    estadoIzquierda = 1;
+    moviendoIzquierda = true;
+};
+
+
+function detenerMovimiento() {
+    if (!modoAutomatico && jugador.body.onFloor()) {
+        jugador.body.velocity.x = 0;
+    }
 }
 
 function update() {
-    if (newGame) {
-        newGame = false;
-        player.body.position.x = 50;
-        ship2.position.x = 50;
-        bullet2.position.x = 50;
-        bullet2.position.y = canvasHeight - 350;
-        bullet3.position.x = canvasWidth - 100; 
-        bullet3.position.y = 70;
+    fondo.tilePosition.x -= 1;
+    juego.physics.arcade.collide(bala1, jugador, manejarColision, null, this);
+    juego.physics.arcade.collide(bala2, jugador, manejarColision, null, this);
+    juego.physics.arcade.collide(bala3, jugador, manejarColision, null, this);
+
+    bala3.body.velocity.y = 80;
+    bala3.body.position.x -= 5;
+
+    enSuelo = 1;
+    enAire = 0;
+
+    estadoDerecha = 0;
+    estadoIzquierda = 0;
+
+    if (!jugador.body.onFloor()) {
+        enSuelo = 0;
+        enAire = 1;
+        moverDerechaEnAire = 1;
+    } else {
+        moverDerechaEnAire = 0;
     }
 
-    background.tilePosition.x -= 1;
-
-    game.physics.arcade.collide(bullet, player, collisionHandler, null, this);
-    game.physics.arcade.collide(bullet2, player, collisionHandler, null, this);
-    game.physics.arcade.collide(bullet3, player, collisionHandler, null, this); 
-
-    groundStatus = 1;
-    airStatus = 0;
-    progress = 0;
-    still = 1;
-
-    if (!player.body.onFloor()) {
-        groundStatus = 0;
-        airStatus = 1;
-    }
-    if (player.body.position.x > 50) {
-        progress = 1;
-        still = 0;
+    if (bala3.position.x <= 0) {
+        reiniciarPosicionBala3();
     }
 
-    bullet2.body.velocity.y = bulletSpeed2;
+    desplazamientoBala = Math.floor(jugador.position.x - bala1.position.x);
+    desplazamientoBala2 = Math.floor(jugador.position.y - bala2.position.y);
+    desplazamientoBala3 = Math.floor(jugador.position.x - bala3.position.x);
+    desplazamientoBala3b = Math.floor(jugador.position.y - bala3.position.y);
 
-    bulletDistance = Math.floor(player.position.x - bullet.position.x);
-    bulletDistance2 = Math.floor(player.position.y - bullet2.position.y);
-    bulletDistance2x = Math.floor(player.position.x - bullet2.position.x);
-    bulletDistance3 = Math.floor(player.position.y - bullet3.position.y); 
-    bulletDistance3x = Math.floor(player.position.x - bullet3.position.x);
-
-    if (autoMode == false && right.isDown && player.body.onFloor()) {
-        moveRight();
+    if (!modoAutomatico && teclaSaltar.isDown && jugador.body.onFloor()) {
+        saltar();
     }
 
-    if (autoMode == false && jump.isDown && player.body.onFloor()) {
-        jumpAction();
+    if (!modoAutomatico && teclaIzquierda.isDown) {
+        moverIzquierda();
     }
-    
-    
-    if (autoMode == true && bullet.position.x > 0 && player.body.onFloor()) {
-        if (trainingDataInputBullet2([bulletDistance2, bulletSpeed2])) {
-            if (bulletDistance2x === 0)
-                moveRight2();
-        }
 
-        if (trainingDataInput([bulletDistance, bulletSpeed])) {
-            if (bulletDistance2x === 0 && bulletDistance2 > 150)
-                jumpAction();
-            else if (bulletDistance2x > 0)
-                jumpAction();
-        }
+    if (!modoAutomatico && teclaDerecha.isDown) {
+        moverDerecha();
+    }
 
-        if (trainingDataInputBullet3([bulletDistance3, bulletSpeed3])) {
-            if (bulletDistance3x === 0 )
-                jumpAction();
-            else if (bulletDistance3x > 0)
-                jumpAction();
+    if (moviendoIzquierda) {
+        if (bala1.body.position.x > 600 && bala2.body.position.y < 280 && bala3.body.position.y < 280) {
+            moverDerecha();
         }
     }
-    
-    if (bulletD == false) {
-        fire();
+
+    if (modoAutomatico && bala2.position.y > 200) {
+        const resultado = obtenerDatosMoverIzquierda([desplazamientoBala2, jugador.position.x, bala2.position.x]);
+        if (resultado) {
+            moverIzquierda();
+        }
     }
 
-    if (bullet.position.x <= 0) {
-        resetVariables();   
+    if (modoAutomatico && bala3.position.y > 300 && bala3.position.x > 0) {
+        if (obtenerDatosMoverDerecha([desplazamientoBala3, desplazamientoBala3b])) {
+            moverIzquierda();
+            console.log("RN Mover Izquierda");
+        }
     }
 
-    if (bulletD2 == false) {
-        fire2();
+    if (modoAutomatico && bala1.position.x > 0 && jugador.body.onFloor()) {
+        if (obtenerDatosSaltar([desplazamientoBala, velocidadBala])) {
+            saltar();
+        }
     }
 
-    if (bullet3.position.y >= canvasHeight) {
-        fire3();
+    bala2.body.velocity.y = velocidadBala2;
+
+    if (bala2.body.position.y <= 0) {
+        bloqueIA = false;
     }
 
-    if (autoMode == false && bullet.position.x > 0) {
-        trainingData.push({
-            'input': [bulletDistance, bulletSpeed],
-            'output': [airStatus, groundStatus]
+    if (!balaDisparada) {
+        disparar();
+    }
+
+    if (bala1.position.x <= 0) {
+        resetearVariablesJuego();
+    }
+    if (bala2.position.y >= 380) {
+        reiniciarBala2();
+    }
+
+    if (!modoAutomatico && bala2.position.y > 100 && desplazamientoBala2 > 0) {
+        datosEntrenamientoMoverIzquierda.push({
+            'input': [desplazamientoBala2, jugador.position.x, bala2.position.x],
+            'output': [estadoIzquierda]
         });
     }
 
-    if (autoMode == false && bullet2.position.y > 50) {
-        trainingData2.push({
-            'input': [bulletDistance2, bulletSpeed2],
-            'output': [progress, still]
+    if (!modoAutomatico && bala3.position.y > 200 && bala3.position.x > 0) {
+        datosEntrenamientoMoverDerecha.push({
+            'input': [desplazamientoBala3, desplazamientoBala3b],
+            'output': [estadoIzquierda]
         });
     }
-    if (autoMode == false && bullet3.position.y >= 0) {
-        trainingData3.push({
-            'input': [bulletDistance3, bulletSpeed3],
-            'output': [progress, still] 
+
+    if (!modoAutomatico && bala1.position.x > 0) {
+        datosEntrenamientoSaltar.push({
+            'input': [desplazamientoBala, velocidadBala],
+            'output': [enAire]
         });
     }
 }
 
-function fire() {
-    bulletSpeed = -1 * randomSpeed(300, 400);
-    bullet.body.velocity.y = 0;
-    bullet.body.velocity.x = bulletSpeed;
-    bulletD = true;
-    bulletD2 = true;
+function disparar() {
+    const max = modoAutomatico ? 700 : 500;
+    velocidadBala = -1 * obtenerVelocidadAleatoria(300, max);
+    bala1.body.velocity.y = 0;
+    bala1.body.velocity.x = velocidadBala;
+    balaDisparada = true;
 }
 
-function fire2() {
-    bullet2.body.velocity.y = bulletSpeed2;
-    bulletD2 = true;
+function manejarColision() {
+    pausarJuego();
+    reiniciarPosicionBala3();
+    reiniciarBala2();
+    jugador.position.x = 50;
 }
 
-function fire3() {
-    var dx = player.position.x - bullet3.position.x;
-    var dy = player.position.y - bullet3.position.y;
-    var magnitude = Math.sqrt(dx * dx + dy * dy);
-    
-    bullet3.body.velocity.x = (dx / magnitude) * bulletSpeed3;
-    bullet3.body.velocity.y = (dy / magnitude) * bulletSpeed3;
-    
-    bullet3.position.x = canvasWidth - 100;
-    bullet3.position.y = canvasHeight - 50;
-    bulletD3 = true;
-}
-
-function collisionHandler() {
-    pause();
-}
-
-function randomSpeed(min, max) {
+function obtenerVelocidadAleatoria(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
-}
-
-function render() {
-    // Render code, if needed
 }
