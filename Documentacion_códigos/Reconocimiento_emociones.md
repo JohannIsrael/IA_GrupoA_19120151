@@ -288,8 +288,15 @@ cv.destroyAllWindows()
 
 Obtiendo asi los siguientes resultados
 
+La siguiente imágene es cuando no se identifica una emoción, que se clasifican en las imágenes negativas
 
+![Imagen de emocion no identificada](../reconocedor_rostros/resultados/desconocido.PNG)
 
+Las siguientes imágene son los resultados de la detección de las 3 emociones
+
+![Imagen de emocion asombro](../reconocedor_rostros/resultados/asombro.PNG)
+![Imagen de emocion enonjo](../reconocedor_rostros/resultados/enojo.PNG)
+![Imagen de emocion feliz](../reconocedor_rostros/resultados/feliz.PNG)
 
 ## Referencias
 
