@@ -11,6 +11,8 @@ CNN/videos
 *.xml
 *.rar
 *.zip
+CNN/Img
+CNN/desastres
 
 #Entorno Virtual
 venv
