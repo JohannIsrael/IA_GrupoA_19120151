@@ -41,7 +41,7 @@ Las imágenes descritas pueden ser de diferentes tamaños. Sin embargo, cada ima
 
 ## Recursos
 
-- [Dataset](https://www.dropbox.com/scl/fo/b4rmoheo98d76l7rgtfmw/ADFv90YhJKf260y8x9NQTAM?rlkey=ezrgumvp9ms1ckyj90wpjgmt8&st=agpcgznz&dl=0)
+- [Dataset](https://drive.google.com/drive/folders/1xNwps1h10YKpaYU7MCf_vpQ51DfdUdSu?usp=drive_link)
 - [Cascade Trainer GUI](https://amin-ahmadi.com/cascade-trainer-gui/)
 
 ## Proceso
