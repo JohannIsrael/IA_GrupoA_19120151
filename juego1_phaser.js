@@ -125,14 +125,14 @@ function obtenerDatosSaltar(parametrosEntrada) {
 function obtenerDatosMoverIzquierda(parametrosEntrada) {
     salidaRedNeuronalMoverIzquierda = redNeuronalMoverIzquierda.activate(parametrosEntrada);    
     const resultado = Math.round(salidaRedNeuronalMoverIzquierda[0] * 100);
-    console.log("RN Mover Izquierda", salidaRedNeuronalMoverIzquierda, resultado);
+    console.log("Mover Izquierda", salidaRedNeuronalMoverIzquierda, resultado);
     return resultado > 20;
 }
 
 function obtenerDatosMoverDerecha(parametrosEntrada) {
     salidaRedNeuronalMoverDerecha = redNeuronalMoverDerecha.activate(parametrosEntrada);
     const resultado = Math.round(salidaRedNeuronalMoverDerecha[0] * 100);
-    console.log("RN Mover Derecha", salidaRedNeuronalMoverDerecha, resultado);
+    console.log("Mover Derecha", salidaRedNeuronalMoverDerecha, resultado);
     return resultado >= 9;
 }
 
@@ -205,7 +205,6 @@ const moverIzquierda = () => {
     }
 };
 
-
 function detenerMovimiento() {
     if (!modoAutomatico && jugador.body.onFloor()) {
         jugador.body.velocity.x = 0;
@@ -272,7 +271,6 @@ function update() {
     if (modoAutomatico && bala3.position.y > 300 && bala3.position.x > 0) {
         if (obtenerDatosMoverDerecha([desplazamientoBala3, desplazamientoBala3b])) {
             moverIzquierda();
-            console.log("RN Mover Izquierda");
         }
     }
 
